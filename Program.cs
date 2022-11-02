@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +31,83 @@ namespace My_Sec
                 first = false;
             } while (!double.TryParse(Console.ReadLine(), out n));
             return n;
+        }
+
+        static bool get_inverse(double[,] Matrix, double[,]Matrix_inverse, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                double div = Matrix[i, i];
+                if (div == 0.0)
+                {
+                    if (i == n - 1)
+                    {
+                        Console.WriteLine("\nThis divisor matrix2 is singular and can't have an inverse for it.\n");
+                        return false;
+                    }
+
+                    for (int j = 0; j < n; j++)
+                    {
+                        double temp = Matrix[i, j];
+                        Matrix[i, j] = Matrix[i + 1, j];
+                        Matrix[i + 1, j] = temp;
+
+                        double temp_inv = Matrix_inverse[i, j];
+                        Matrix_inverse[i, j] = Matrix_inverse[i + 1, j];
+                        Matrix_inverse[i + 1, j] = temp;
+                    }
+                    i--;
+                    continue;
+                }
+                else
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        Matrix_inverse[i, j] /= div;
+                        Matrix[i, j] /= div;
+                    }
+                }
+
+                for (int j = 0; j < n; j++)
+                {
+                    if (j == i) continue;
+
+                    double multiplier = -1 * Matrix[j, i];
+                    for (int k = 0; k < n; k++)
+                    {
+                        Matrix[j, k] += multiplier * Matrix[i, k];
+                        Matrix_inverse[j, k] += multiplier * Matrix_inverse[i, k];
+                    }
+                }
+
+            }
+            return true;
+        }
+
+        static void matrices_mult(double[,] m1, double[,] m2, double[,] ans, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    for (int k = 0; k < n; k++)
+                    {
+                        ans[i, j] += m1[i, k] * m2[k, j];
+                    }
+                }
+            }
+        }
+
+        static void print_matrix(double[,] m, int n)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    Console.Write(String.Format("{0:0.##}", m[i, j]) + "\t");
+                }
+                Console.WriteLine();
+            }
         }
 
         static void Main(string[] args)
@@ -66,73 +143,16 @@ namespace My_Sec
                 }
             }
 
-            for(int i = 0; i < n; i++)
-            {
-                double div = matrix2[i, i];
-                if(div == 0.0)
-                {
-                    if(i == n - 1)
-                    {
-                        Console.WriteLine("\nThis divisor matrix2 is singular and can't have an inverse for it.\n");
-                        return;
-                    }
+            if(!get_inverse(matrix2, matrix2_inverse, n)) return;
 
-                    for (int j = 0; j < n; j++)
-                    {
-                        double temp = matrix2[i, j];
-                        matrix2[i, j] = matrix2[i+1, j];
-                        matrix2[i + 1, j] = temp;
+            Console.WriteLine("\nMatrix1 / Matrix2 = Matrix1 * InverseOf(Matrix2)");
+            Console.WriteLine("\n#InverseOf(Matrix2) : ");
+            print_matrix(matrix2_inverse, n);
 
-                        double temp_inv = matrix2_inverse[i, j];
-                        matrix2_inverse[i, j] = matrix2_inverse[i + 1, j];
-                        matrix2_inverse[i + 1, j] = temp;
-                    }
-                    i--;
-                    continue;
-                }
-                else
-                {
-                    for (int j = 0; j < n; j++)
-                    {
-                        matrix2_inverse[i, j] /= div;
-                        matrix2[i, j] /= div;
-                    }
-                }
-                
-                for(int j = 0; j < n; j++)
-                {
-                    if (j == i) continue;
-
-                    double multiplier = -1 * matrix2[j, i];
-                    for(int k = 0; k < n; k++)
-                    {
-                        matrix2[j, k] += multiplier * matrix2[i, k];
-                        matrix2_inverse[j, k] += multiplier * matrix2_inverse[i, k];
-                    }
-                }
-                
-            }
-
-            for(int i = 0; i < n; i++)
-            {
-                for(int j = 0; j < n; j++)
-                {
-                    for(int k = 0; k < n; k++)
-                    {
-                        division_answer[i, j] += matrix1[i, k] * matrix2_inverse[k, j];
-                    }
-                }
-            }
+            matrices_mult(matrix1, matrix2_inverse, division_answer, n);
 
             Console.WriteLine("\nMatrix1 / Matrix2 = ");
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    Console.Write(division_answer[i, j] + " ");
-                }
-                Console.WriteLine();
-            }
+            print_matrix(division_answer, n);
 
         }
     }
