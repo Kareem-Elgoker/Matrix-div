@@ -42,7 +42,7 @@ namespace My_Sec
                 {
                     if (i == n - 1)
                     {
-                        Console.WriteLine("\nThis divisor matrix2 is singular and can't have an inverse for it.\n");
+                        Console.WriteLine("\nThis divisor matrix2 is singular(its determinate = 0) and can't have an inverse for it.\n");
                         return false;
                     }
 
@@ -153,6 +153,7 @@ namespace My_Sec
 
             Console.WriteLine("\nMatrix1 / Matrix2 = ");
             print_matrix(division_answer, n);
+            Console.WriteLine();
 
         }
     }
