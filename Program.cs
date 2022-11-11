@@ -8,7 +8,7 @@ namespace My_Sec
 {
     internal class Program
     {
-        
+
         static int integer_validation(string input)
         {
             int n; bool first = true;
@@ -33,14 +33,24 @@ namespace My_Sec
             return n;
         }
 
-        static bool get_inverse(double[,] Matrix, double[,]Matrix_inverse, int n)
+        static bool get_inverse(double[,] Matrix, double[,] Matrix_inverse, int n)
         {
             for (int i = 0; i < n; i++)
             {
                 double div = Matrix[i, i];
                 if (div == 0.0)
                 {
-                    if (i == n - 1)
+                    int pos = -1;
+                    for(int j = i + 1; j < n; j++)
+                    {
+                        if (Matrix[j, i] != 0.0)
+                        {
+                            pos = j;
+                            break;
+                        }
+                    }
+
+                    if (pos == -1)
                     {
                         Console.WriteLine("\nThis divisor matrix2 is singular(its determinate = 0) and can't have an inverse for it.\n");
                         return false;
@@ -49,12 +59,12 @@ namespace My_Sec
                     for (int j = 0; j < n; j++)
                     {
                         double temp = Matrix[i, j];
-                        Matrix[i, j] = Matrix[i + 1, j];
-                        Matrix[i + 1, j] = temp;
+                        Matrix[i, j] = Matrix[pos, j];
+                        Matrix[pos, j] = temp;
 
                         double temp_inv = Matrix_inverse[i, j];
-                        Matrix_inverse[i, j] = Matrix_inverse[i + 1, j];
-                        Matrix_inverse[i + 1, j] = temp;
+                        Matrix_inverse[i, j] = Matrix_inverse[pos, j];
+                        Matrix_inverse[pos, j] = temp_inv;
                     }
                     i--;
                     continue;
@@ -112,7 +122,7 @@ namespace My_Sec
 
         static void Main(string[] args)
         {
-            
+
             Console.WriteLine("Note : to make a division for two matrices -> they should both be a n*n");
 
             int n = integer_validation("Enter n : ");
@@ -136,14 +146,14 @@ namespace My_Sec
             Console.WriteLine();
             for (int i = 0; i < n; i++)
             {
-                for(int j = 0; j < n; j++)
+                for (int j = 0; j < n; j++)
                 {
                     matrix2[i, j] = double_validation($"Matrix2[{i + 1}][{j + 1}] : ");
                     if (i == j) matrix2_inverse[i, j] = 1.0;
                 }
             }
 
-            if(!get_inverse(matrix2, matrix2_inverse, n)) return;
+            if (!get_inverse(matrix2, matrix2_inverse, n)) return;
 
             Console.WriteLine("\nMatrix1 / Matrix2 = Matrix1 * InverseOf(Matrix2)");
             Console.WriteLine("\n#InverseOf(Matrix2) : ");
