@@ -114,7 +114,7 @@ namespace My_Sec
             {
                 for (int j = 0; j < n; j++)
                 {
-                    Console.Write(String.Format("{0:0.##}", m[i, j]) + "\t");
+                    Console.Write(String.Format("{0:0.####}", m[i, j]) + "\t");
                 }
                 Console.WriteLine();
             }
